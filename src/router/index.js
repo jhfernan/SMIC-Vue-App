@@ -1,31 +1,36 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Error404 from '../views/404.vue'
+import Core from './routes/core.js'
+import Home from './routes/home.js'
+import store from '../store/index'
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: function () {
-      return import(/* webpackChunkName: "about" */ '../views/About.vue')
-    }
-  }
-]
+// Add all routes
+let routes = [...Core, ...Home]
+
+// App level routes
+routes.push({
+	path: '*',
+	name: '404',
+	component: Error404
+})
 
 const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes
+	mode: 'history',
+	base: process.env.BASE_URL,
+	routes
+})
+
+router.beforeEach((to, from, next) => {
+	if (to.matched.some(record => record.meta.requiresAuth) && !store.getters.isLoggedIn) {
+		next('/login')
+	} else if (to.matched.some(record => record.meta.requiresLoggedOut) && store.getters.isLoggedIn) {
+		next('/home')
+	} else {
+		next()
+	}
 })
 
 export default router
