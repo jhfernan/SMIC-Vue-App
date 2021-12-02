@@ -1,8 +1,8 @@
 <template>
-<v-container>
-	<breadcrumbs />
-	<h1>Hello World</h1>
-</v-container>
+	<v-container fluid>
+		<breadcrumbs />
+		<h1>Dashboard</h1>
+	</v-container>
 </template>
 
 <script>

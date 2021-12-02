@@ -1,10 +1,17 @@
-import Home from '../../views/home/Home.vue'
 
 export default [
 	{
 		path: '/home',
-		name: 'Home',
-		component: Home,
+		name: 'Dashboard',
+		component: () => import('../../views/home/Dashboard.vue'),
+		meta: {
+			requiresAuth: true
+		}
+	},
+	{
+		path: '/profile',
+		name: 'Profile',
+		component: () => import('../../views/home/Profile.vue'),
 		meta: {
 			requiresAuth: true
 		}

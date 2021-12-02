@@ -13,6 +13,9 @@ export default new Vuex.Store({
 	getters: {
 		isLoggedIn(state) {
 			return !!state.token
+		},
+		currentUser(state) {
+			return !!state.user ? state.user : {}
 		}
 	},
 
@@ -47,16 +50,26 @@ export default new Vuex.Store({
 	},
 
 	actions: {
-		async init({ commit }) {
+		async init({ commit, dispatch }) {
 			let token = localStorage.getItem('token')
 			if (token && token !== 'undefined') {
-				axios.defaults.headers.common['Authorization'] = token
-				let { data } = await axios.get('/api/authenticate')
-				let user = data.user
-				commit('setAuth', { user, token })
+				try {
+					axios.defaults.headers.common['Authorization'] = token
+					let { data } = await axios.get('/api/authenticate')
+					let user = data.user
+					commit('setAuth', { user, token })
+				} catch (e) {
+					console.error('FROM STORE INIT METHOD: Error with token', e)
+					dispatch('resetStorage')
+				}
 			} else {
-				localStorage.removeItem('token')
+				dispatch('resetStorage')
 			}
+		},
+
+		async resetStorage() {
+			localStorage.removeItem('token')
+			delete axios.defaults.headers.common['Authorization']
 		},
 
 		async login({ commit }, credentials) {
