@@ -9,7 +9,7 @@ export default [
 		}
 	},
 	{
-		path: '/profile',
+		path: '/my_profile',
 		name: 'Profile',
 		component: () => import('../../views/home/Profile.vue'),
 		meta: {

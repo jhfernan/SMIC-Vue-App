@@ -1,7 +1,7 @@
 <template>
 <v-container fluid fill-height>
 	<v-layout align-center justify-center>
-		<v-card class="elevation-12" max-width="500" min-width="400">
+		<v-card class="elevation-12 py-5" max-width="500" min-width="400">
 			<v-card-actions>
 				<v-spacer />
 				<v-icon color="red" x-large>mdi-alert-octagon</v-icon>

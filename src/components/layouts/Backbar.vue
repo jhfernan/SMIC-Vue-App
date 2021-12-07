@@ -48,9 +48,9 @@
 
 		<v-spacer />
 
-		<v-btn class="mr-2" @click="logout">
+		<!-- <v-btn class="mr-2" @click="logout">
 			Logout
-		</v-btn>
+		</v-btn> -->
 	</v-app-bar>
 
 </div>
@@ -60,6 +60,20 @@
 import helpers from '@/plugins/helpers'
 
 export default {
+	async asyncData({ app, error }) {
+		try {
+			let users = []
+			let snap = await fireDb.collection('users').get()
+			snap.forEach(doc => {
+				// doc.data() is never undefined for query doc snapshots
+				users.push({ id: doc.id, ...doc.data() })
+			})
+			return { users }
+		} catch (e) {
+			// TODO: error handling
+			error({ statusCode: '404', message: `${e.code}: ${e.message}` })
+		}
+	},
 	computed: {
 		gravatar() {
 			return helpers.gravatar(this.$store.state.user.email)
@@ -80,7 +94,7 @@ export default {
 				{
 					icon: 'far fa-user',
 					name: 'My Profile',
-					to: '/profile'
+					to: '/my_profile'
 				},
 				{
 					icon: 'fas fa-cog',
@@ -95,7 +109,7 @@ export default {
 				{
 					icon: 'fas fa-users-cog',
 					name: 'Manage Users',
-					to: '/users',
+					to: '/manage_users',
 					auth: 'admin'
 				},
 				{

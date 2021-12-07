@@ -8,6 +8,12 @@ export default new Vuex.Store({
 	state: {
 		user: {},
 		token: null,
+		snack: {
+			available: false,
+			color: '',
+			timeout: 3000,
+			text: ''
+		}
 	},
 
 	getters: {
@@ -47,6 +53,16 @@ export default new Vuex.Store({
 			state.user = {}
 			state.token = null
 		},
+
+		// Handling Snacks
+		set_true(state, snack) {
+			state.snack.text = snack.text
+			state.snack.color = snack.color
+			state.snack.available = true
+		},
+		set_false(state) {
+			state.snack.available = false
+		},
 	},
 
 	actions: {
@@ -55,9 +71,14 @@ export default new Vuex.Store({
 			if (token && token !== 'undefined') {
 				try {
 					axios.defaults.headers.common['Authorization'] = token
-					let { data } = await axios.get('/api/authenticate')
+					let {
+						data
+					} = await axios.get('/api/authenticate')
 					let user = data.user
-					commit('setAuth', { user, token })
+					commit('setAuth', {
+						user,
+						token
+					})
 				} catch (e) {
 					console.error('FROM STORE INIT METHOD: Error with token', e)
 					dispatch('resetStorage')
@@ -80,7 +101,10 @@ export default new Vuex.Store({
 				axios.defaults.headers.common['Authorization'] = token
 				let getResponse = await axios.get('/api/authenticate')
 				const user = getResponse.data.user
-				await commit('setAuth', { user, token })
+				await commit('setAuth', {
+					user,
+					token
+				})
 				router.push('/home')
 			} catch (e) {
 				throw (e)
@@ -96,6 +120,28 @@ export default new Vuex.Store({
 			} catch (e) {
 				throw (e)
 			}
+		},
+
+		showSnack ({ commit, dispatch }, data) {
+			let snack = {}
+			if (data.err && data.err.response) {
+				snack.text = `${data.err.response.status || 'Error'}: ${data.err.response.data}`
+			} else {
+				snack.text = data.message ? data.message : 'Succesfully completed'
+			}
+			snack.color = data.color ? data.color : 'success'
+			commit('set_true', snack)
+			dispatch('timeOut')
+		},
+
+		closeSnack ({ commit }) {
+			commit('set_false')
+		},
+
+		timeOut ({ dispatch }) {
+			setTimeout(() => {
+				dispatch('closeSnack')
+			}, 3000)
 		}
 	}
 })

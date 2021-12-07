@@ -7,7 +7,7 @@ Vue.filter('capitalize', function (value) {
 })
 
 Vue.filter('fullName', function (user) {
-	if (!user) return ''
+	if (!user || !user.name) return ''
 	return `${user.name.charAt(0).toUpperCase() + user.name.slice(1)} ${user.last.charAt(0).toUpperCase() + user.last.slice(1)}`
 })
 
