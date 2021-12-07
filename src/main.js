@@ -1,3 +1,5 @@
+axios.defaults.baseURL = process.env.VUE_APP_API_URL
+
 import Vue from 'vue'
 import App from './App.vue'
 import store from './store'
