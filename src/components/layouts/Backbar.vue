@@ -4,7 +4,7 @@
 		<v-list>
 			<v-list-item class="px-5">
 				<v-list-item-avatar size="75">
-					<v-img :src="gravatar" />
+					<v-img :src="gravatar" v-on:error="onImgError" />
 				</v-list-item-avatar>
 				<v-spacer />
 			</v-list-item>
@@ -60,28 +60,15 @@
 import helpers from '@/plugins/helpers'
 
 export default {
-	async asyncData({ app, error }) {
-		try {
-			let users = []
-			let snap = await fireDb.collection('users').get()
-			snap.forEach(doc => {
-				// doc.data() is never undefined for query doc snapshots
-				users.push({ id: doc.id, ...doc.data() })
-			})
-			return { users }
-		} catch (e) {
-			// TODO: error handling
-			error({ statusCode: '404', message: `${e.code}: ${e.message}` })
-		}
-	},
 	computed: {
 		gravatar() {
-			return helpers.gravatar(this.$store.state.user.email)
+			return this.gravatarWorking ? helpers.gravatar(this.$store.state.user.email) : '/profile.png'
 		}
 	},
 	data() {
 		return {
 			drawer: true,
+			gravatarWorking: true,
 			links: [{
 					name: 'Home',
 					title: true
@@ -114,12 +101,29 @@ export default {
 				},
 				{
 					name: 'Questions',
-					title: true
+					title: true,
+					auth: 'developer'
 				},
 				{
 					icon: 'fas fa-question-circle',
 					name: 'Question Board',
-					to: '/questions'
+					to: '/questions',
+					auth: 'developer'
+				},
+				{
+					name: 'Courses',
+					title: true
+				},
+				{
+					icon: 'fas fa-book',
+					name: 'Manage Courses',
+					to: '/manage_courses',
+					auth: 'manager'
+				},
+				{
+					icon: 'fas fa-chalkboard',
+					name: 'My Courses',
+					to: '/courses'
 				},
 			]
 		}
@@ -134,11 +138,14 @@ export default {
 				return false
 			}
 		},
+		onImgError() {
+			this.gravatarWorking = false
+		},
 		async logout() {
 			try {
 				await this.$store.dispatch('logout')
-			} catch (e) {
-				// this.$store.dispatch('snack/showSnack', util.errHandler(e))
+			} catch (err) {
+				this.$store.dispatch('showSnack', { err, color: 'error' })
 			}
 		},
 	},

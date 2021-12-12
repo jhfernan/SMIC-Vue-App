@@ -6,11 +6,23 @@ export default {
 		if (currentRoute.name == 'Profile') {
 			items.push({ text: 'Profile', disabled: false, href: '/profile'})
 		}
-		if (currentRoute.name == 'Manage Users' || currentRoute.name == 'Create User') {
+		if (['Manage Users', 'Create User'].includes(currentRoute.name)) {
 			items.push({ text: 'Manage Users', disabled: false, href: '/manage_users'})
 		}
 		if (currentRoute.name == 'Create User') {
 			items.push({ text: 'Create User', disabled: false, href: '/manage_users/create_user'})
+		}
+		if (['Manage Courses', 'Create Course', 'Course Details'].includes(currentRoute.name)) {
+			items.push({ text: 'Manage Courses', disabled: false, href: '/manage_courses'})
+		}
+		if (currentRoute.name == 'Create Course') {
+			items.push({ text: 'Create Course', disabled: false, href: '/manage_courses/create_course'})
+		}
+		if (currentRoute.name == 'Course Details') {
+			items.push({ text: 'Create Course', disabled: false, href: '/manage_courses/course_details'})
+		}
+		if (currentRoute.name == 'My Courses') {
+			items.push({ text: 'My Courses', disabled: false, href: '/courses'})
 		}
 		items[items.length - 1].disabled = true
 		return items
@@ -66,6 +78,11 @@ export default {
 		password: [
 			v => !!v || 'This is required',
 			v => (v && v.length <= 20 && v.length >= 5) || 'Must be between 5 and 20 characters'
+		],
+		year: [
+			v => !!v || 'This is required',
+			v => (v && v.length == 4) || 'Please write year in \'yyyy\' format',
+			v => (v && /^\d+$/.test(v)) || 'Year should only contain numbers'
 		],
 	}
 }

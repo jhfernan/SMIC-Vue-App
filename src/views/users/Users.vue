@@ -6,7 +6,7 @@
 		<template v-slot:default>
 			<thead>
 				<tr>
-					<th class="text-right" colspan="4">
+					<th class="text-right" colspan="5">
 						<v-fab-transition>
 							<v-btn color="success" icon to="/manage_users/create_user">
 								<v-icon>fas fa-user-plus</v-icon>
@@ -22,6 +22,7 @@
 					<th class="text-left">
 						Email
 					</th>
+					<th class="text-left">Permissions</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
@@ -39,11 +40,23 @@
 						</v-row>
 					</td>
 					<td>
-						<a :href="`mailto:${ user.email }`">{{ user.email }}</a>
+						<v-icon class="mr-2" :color="user.emailVerified ? 'green' : 'red'" small>
+							fas fa-check
+						</v-icon>
+						<a :href="`mailto:${ user.email }`">
+							{{ user.email }}
+						</a>
+					</td>
+					<td>
+						<template v-for="(chip, i) in permissions">
+							<v-chip class="ma-2" color="primary" :key="`ca${i}`" v-if="user[chip.name]">
+								{{ chip.text }}
+							</v-chip>
+						</template>
 					</td>
 					<td>
 						<v-btn @click="setDeleteUser(user)" color="error" icon>
-							<v-icon>fas fa-trash</v-icon>
+							<v-icon small>fas fa-trash</v-icon>
 						</v-btn>
 					</td>
 				</tr>
@@ -51,7 +64,7 @@
 		</template>
 	</v-simple-table>
 
-	<v-skeleton-loader class="pt-3" type="list-item-avatar, list-item-avatar, list-item-avatar, list-item-avatar" v-if="loading" />
+	<v-skeleton-loader class="pt-3" type="list-item-avatar, list-item-avatar, list-item-avatar, list-item-avatar, list-item-avatar, list-item-avatar, list-item-avatar, list-item-avatar, list-item-avatar, list-item-avatar" v-if="loading" />
 
 	<v-dialog max-width="290" persistent v-model="delDialog">
 		<v-card>
@@ -92,6 +105,15 @@ export default {
 			delLoader: false,
 			delUserData: {},
 			loading: true,
+			permissions: [
+				{ name: 'admin', text: 'A' },
+				{ name: 'manager', text: 'M' },
+				{ name: 'staff', text: 'ST' },
+				{ name: 'teacher', text: 'T' },
+				{ name: 'teachingAssistant', text: 'TA' },
+				{ name: 'student', text: 'S' },
+				{ name: 'developer', text: 'D' }
+			],
 			users: []
 		}
 	},
@@ -105,7 +127,10 @@ export default {
 				this.users = res.data
 				this.loading = false
 			} catch (err) {
-				this.$store.dispatch('showSnack', { err, color: 'error' })
+				this.$store.dispatch('showSnack', {
+					err,
+					color: 'error'
+				})
 			}
 		},
 		setDeleteUser(user) {
@@ -113,9 +138,11 @@ export default {
 			this.delDialog = true
 		},
 		async delUser() {
-			this.loader = true
+			this.delLoader = true
 			try {
-				let { data } = await axios.delete('/api/v1/users/' + this.delUserData._id)
+				let {
+					data
+				} = await axios.delete('/api/v1/users/' + this.delUserData._id)
 				this.users = this.users.filter(user => user._id !== data)
 				this.delDialog = false
 				this.delUserData = {}
@@ -124,9 +151,12 @@ export default {
 					color: 'success'
 				})
 			} catch (err) {
-				this.$store.dispatch('showSnack', { err, color: 'error' })
+				this.$store.dispatch('showSnack', {
+					err,
+					color: 'error'
+				})
 			} finally {
-				this.loader = false
+				this.delLoader = false
 			}
 		}
 	}

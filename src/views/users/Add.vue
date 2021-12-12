@@ -9,7 +9,7 @@
 					<v-subheader>Account Info</v-subheader>
 				</v-col>
 				<v-col cols="12" md="6" lg="4" offset-lg="2">
-					<v-text-field error-count="2" label="First Name" :rules="rules.maxRequired(20)" validate-on-blur v-model="form.name" />
+					<v-text-field label="First Name" :rules="rules.maxRequired(20)" validate-on-blur v-model="form.name" />
 				</v-col>
 				<v-col cols="12" md="6" lg="4">
 					<v-text-field label="Last Name" :rules="rules.maxRequired(20)" validate-on-blur v-model="form.last" />
@@ -75,14 +75,9 @@
 
 		<v-toolbar class="my-10" color="transparent" dense flat>
 			<v-spacer />
-			<v-btn class="mr-3" @click="clear">clear</v-btn>
-			<v-btn @click="submit" color="success" :disabled="!valid || loading" :loading="loading">
+			<v-btn class="mr-3" @click="clear">Clear</v-btn>
+			<v-btn @click="submit" color="success" :disabled="loading" :loading="loading">
 				Submit
-				<template v-slot:loader>
-					<span class="custom-loader">
-						<v-icon light>mdi-cached</v-icon>
-					</span>
-				</template>
 			</v-btn>
 		</v-toolbar>
 	</v-form>

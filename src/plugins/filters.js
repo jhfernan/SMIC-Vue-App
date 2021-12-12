@@ -30,3 +30,13 @@ Vue.filter('mainPermission', function (user) {
 		: user.teachingAssistant ? 'TA'
 		: 'Student'
 })
+
+Vue.filter('subjectName', function (subject) {
+	if (!subject) return ''
+	return `${subject.number} - ${subject.name}`
+})
+
+Vue.filter('semester', function (course) {
+	if (!course) return ''
+	return `${course.semester} ${course.year}`
+})

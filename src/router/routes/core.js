@@ -17,5 +17,10 @@ export default [
 		meta: {
 			requiresLoggedOut: true
 		}
+	},
+	{
+		path: '/403',
+		name: '403',
+		component: () => import('../../views/403.vue')
 	}
 ]

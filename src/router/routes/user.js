@@ -5,7 +5,8 @@ export default [
 		name: 'Manage Users',
 		component: () => import('../../views/users/Users.vue'),
 		meta: {
-			requiresAdmin: true
+			auth: 'admin',
+			requiresAuth: true
 		}
 	},
 	{
@@ -13,7 +14,8 @@ export default [
 		name: 'Create User',
 		component: () => import('../../views/users/Add.vue'),
 		meta: {
-			requiresAdmin: true
+			auth: 'admin',
+			requiresAuth: true
 		}
 	},
 	{

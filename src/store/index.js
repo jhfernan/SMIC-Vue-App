@@ -11,7 +11,7 @@ export default new Vuex.Store({
 		snack: {
 			available: false,
 			color: '',
-			timeout: 3000,
+			timeout: 10000,
 			text: ''
 		}
 	},
@@ -79,8 +79,8 @@ export default new Vuex.Store({
 						user,
 						token
 					})
-				} catch (e) {
-					console.error('FROM STORE INIT METHOD: Error with token', e)
+				} catch (err) {
+					console.error('FROM STORE INIT METHOD: Error with token', err)
 					dispatch('resetStorage')
 				}
 			} else {
@@ -138,10 +138,10 @@ export default new Vuex.Store({
 			commit('set_false')
 		},
 
-		timeOut ({ dispatch }) {
+		timeOut ({ dispatch, state }) {
 			setTimeout(() => {
 				dispatch('closeSnack')
-			}, 3000)
+			}, state.snack.timeout)
 		}
 	}
 })

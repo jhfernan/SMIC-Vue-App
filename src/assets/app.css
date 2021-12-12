@@ -1,3 +1,7 @@
 .lf-img-rounded {
 	border-radius: 50%;
 }
+
+.lf-pointer:hover {
+	cursor: pointer;
+}
