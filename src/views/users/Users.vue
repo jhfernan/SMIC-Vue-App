@@ -55,6 +55,9 @@
 						</template>
 					</td>
 					<td>
+						<v-btn @click="resendLink(user, i)" color="primary" icon :disabled="resendLoader(i)" :loading="resendLoader(i)">
+							<v-icon>fas fa-envelope-square</v-icon>
+						</v-btn>
 						<v-btn @click="setDeleteUser(user)" color="error" icon>
 							<v-icon small>fas fa-trash</v-icon>
 						</v-btn>
@@ -96,6 +99,12 @@ export default {
 	components: {
 		Breadcrumbs
 	},
+	// computed: {
+	// 	resendLoader(index) {
+	// 		console.log('The selected', index)
+	// 		return false
+	// 	}
+	// },
 	created() {
 		this.fetchUsers()
 	},
@@ -114,6 +123,7 @@ export default {
 				{ name: 'student', text: 'S' },
 				{ name: 'developer', text: 'D' }
 			],
+			resendIndexes: [],
 			users: []
 		}
 	},
@@ -132,6 +142,28 @@ export default {
 					color: 'error'
 				})
 			}
+		},
+		async resendLink(user, i) {
+			this.resendIndexes.push(i)
+			try {
+				let {
+					data
+				} = await axios.get('/api/verify.recreate/' + user._id)
+				this.$store.dispatch('showSnack', {
+					message: 'Link resent successfully',
+					color: 'success'
+				})
+			} catch (err) {
+				this.$store.dispatch('showSnack', {
+					err,
+					color: 'error'
+				})
+			} finally {
+				this.resendIndexes = this.resendIndexes.filter(item => item != i)
+			}
+		},
+		resendLoader(index) {
+			return this.resendIndexes.includes(index) ? true : false
 		},
 		setDeleteUser(user) {
 			this.delUserData = user
