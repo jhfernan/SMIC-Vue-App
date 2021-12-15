@@ -27,7 +27,10 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
 	if (to.meta.requiresAuth && !store.getters.isLoggedIn) {
-		next('/login')
+		next({
+				path: '/login',
+				query: { next: to.fullPath }
+		})
 	} else if (to.meta.requiresLoggedOut && store.getters.isLoggedIn) {
 		next('/home')
 	} else if (to.meta.auth && store.getters.currentUser[to.meta.auth]) {

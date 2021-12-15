@@ -41,7 +41,8 @@ export default {
 		async login() {
 			this.err = null
 			this.loading = true
-			await this.$store.dispatch('login', this.form)
+			let next = this.$route.query.next ? this.$route.query.next : false
+			await this.$store.dispatch('login', { credentials: this.form, next })
 				.catch(err => {
 					this.loading = false
 					this.err = helpers.handleErr(err)

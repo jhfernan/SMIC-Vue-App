@@ -93,9 +93,9 @@ export default new Vuex.Store({
 			delete axios.defaults.headers.common['Authorization']
 		},
 
-		async login({ commit }, credentials) {
+		async login({ commit }, data) {
 			try {
-				let postResponse = await axios.post('/api/authenticate', credentials)
+				let postResponse = await axios.post('/api/authenticate', data.credentials)
 				const token = postResponse.data.token
 				localStorage.setItem('token', token)
 				axios.defaults.headers.common['Authorization'] = token
@@ -105,7 +105,11 @@ export default new Vuex.Store({
 					user,
 					token
 				})
-				router.push('/home')
+				if (data.next) {
+					router.push(data.next)
+				} else {
+					router.push('/home')
+				}
 			} catch (e) {
 				throw (e)
 			}
