@@ -1,5 +1,15 @@
 import Vue from 'vue'
 
+// Date Filters
+let longOptions = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }
+let shortOptions = { year: 'numeric', month: 'short', day: 'numeric' }
+let timeOptions = { hour: '2-digit', minute: '2-digit' }
+
+Vue.filter('longDateTime', val => new Date(val).toLocaleDateString('en-US', longOptions))
+Vue.filter('shortDate', val => new Date(val).toLocaleDateString('en-US'))
+Vue.filter('shortTime', val => new Date(val).toLocaleTimeString('en-US', timeOptions))
+
+// String formatting filters
 Vue.filter('capitalize', function (value) {
 	if (!value) return ''
 	value = value.toString()
